@@ -27,7 +27,7 @@ class _YouTubePlayerScreenState extends State<YouTubePlayerScreen> {
   String? _error;
 
   String get _embedUrl =>
-      'https://l6322059-max.github.io/YouTube-X/?v=${Uri.encodeComponent(widget.videoId)}';
+      'https://l6322059-max.github.io/YouTube-X/?v=${Uri.encodeComponent(widget.videoId)}&title=${Uri.encodeComponent(widget.title)}';
 
   @override
   void initState() {
