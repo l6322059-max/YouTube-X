@@ -4,36 +4,59 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <title>YouTube X Player</title>
+  <meta name="theme-color" content="#09090b">
+  <title>YouTube X — Player</title>
   <style>
-    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#000;color:#fff;font-family:Arial,sans-serif}
-    main{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
-    #frame{width:100%;aspect-ratio:16/9;max-height:100%;background:#000}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#09090b;color:#fafafa;font-family:Inter,Arial,sans-serif}
+    body{min-height:100vh;display:grid;place-items:center;padding:22px}
+    main{width:min(100%,960px);text-align:center}
+    .brand{font-size:clamp(30px,7vw,54px);font-weight:850;letter-spacing:-2px}.brand span{color:#ff3030}
+    .sub{color:#a1a1aa;margin:10px 0 26px}
+    #frame{width:100%;aspect-ratio:16/9;background:#000;border-radius:16px;overflow:hidden;display:none}
     iframe{width:100%;height:100%;border:0}
-    #message{padding:24px;text-align:center;color:#ddd}
+    #welcome{padding:38px 22px;border:1px solid #27272a;border-radius:16px;background:#111113}
+    #welcome p{color:#a1a1aa;line-height:1.6;margin:8px auto;max-width:560px}
+    .hint{font-size:13px;color:#71717a;margin-top:18px}
+    .error{color:#fca5a5}
   </style>
 </head>
 <body>
-<main><div id="frame"><div id="message">Loading YouTube player…</div></div></main>
+<main>
+  <div class="brand">YouTube <span>X</span></div>
+  <div class="sub">Your YouTube X embedded player</div>
+  <section id="welcome">
+    <h2 id="heading">Player ready</h2>
+    <p id="description">Open a video from the YouTube X app to play it here. This page needs a valid video ID to start playback.</p>
+    <p class="hint">Example format: https://l6322059-max.github.io/YouTube-X/?v=VIDEO_ID</p>
+  </section>
+  <div id="frame"></div>
+</main>
 <script>
 (function(){
-  const id = new URLSearchParams(location.search).get('v') || '';
+  const params = new URLSearchParams(location.search);
+  const raw = params.get('v') || params.get('videoId') || '';
+  const id = raw.trim();
   const frame = document.getElementById('frame');
+  const welcome = document.getElementById('welcome');
+  if (!id) return;
   if (!/^[a-zA-Z0-9_-]{11}$/.test(id)) {
-    document.getElementById('message').textContent = 'Invalid or missing YouTube video ID.';
+    document.getElementById('heading').textContent = 'Invalid video link';
+    document.getElementById('description').textContent = 'The video ID must be exactly 11 characters. Return to YouTube X and open the video again.';
+    document.getElementById('description').className = 'error';
     return;
   }
   const iframe = document.createElement('iframe');
-  const params = new URLSearchParams({
-    autoplay: '1', playsinline: '1', controls: '1', rel: '0',
-    enablejsapi: '1', origin: location.origin
+  const playerParams = new URLSearchParams({
+    autoplay:'1',playsinline:'1',controls:'1',rel:'0',enablejsapi:'1',origin:location.origin
   });
-  iframe.src = 'https://www.youtube.com/embed/' + encodeURIComponent(id) + '?' + params.toString();
-  iframe.title = 'YouTube video player';
+  iframe.src = 'https://www.youtube.com/embed/' + encodeURIComponent(id) + '?' + playerParams.toString();
+  iframe.title = 'YouTube X video player';
   iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
   iframe.allowFullscreen = true;
   iframe.referrerPolicy = 'strict-origin-when-cross-origin';
   frame.replaceChildren(iframe);
+  frame.style.display = 'block';
+  welcome.style.display = 'none';
 })();
 </script>
 </body>
