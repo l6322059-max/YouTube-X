@@ -23,18 +23,16 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import re
           manifest = Path("android/app/src/main/AndroidManifest.xml")
           text = manifest.read_text()
           permission = 'android.permission.INTERNET'
           if permission not in text:
-              text = re.sub(
-                  r'(<manifest\\b[^>]*>)',
-                  r'\\1\\n    <uses-permission android:name="android.permission.INTERNET" />',
-                  text,
-                  count=1,
-              )
+              end = text.find('>')
+              if end < 0:
+                  raise SystemExit("Could not find the manifest opening tag")
+              text = text[:end + 1] + '\\n    <uses-permission android:name="android.permission.INTERNET" />' + text[end + 1:]
               manifest.write_text(text)
+          print("INTERNET permission present:", permission in text)
           PY
       - name: Install dependencies
         run: flutter pub get
