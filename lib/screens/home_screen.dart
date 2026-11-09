@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'player_screen.dart';
 import '../services/youtube_api.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -38,11 +38,10 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() { _isSearching = true; _videos = _api.search(query); });
   }
 
-  Future<void> _openVideo(VideoItem video) async {
-    final uri = Uri.https('www.youtube.com', '/watch', {'v': video.id});
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication) && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not open YouTube.')));
-    }
+  void _openVideo(VideoItem video) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => YouTubePlayerScreen(videoId: video.id, title: video.title),
+    ));
   }
 
   @override
