@@ -27,8 +27,7 @@ class _YouTubePlayerScreenState extends State<YouTubePlayerScreen> {
   String? _error;
 
   String get _embedUrl =>
-      'https://www.youtube-nocookie.com/embed/${Uri.encodeComponent(widget.videoId)}'
-      '?autoplay=1&playsinline=1&rel=0&controls=1';
+      'https://l6322059-max.github.io/YouTube-X/player/?v=${Uri.encodeComponent(widget.videoId)}';
 
   @override
   void initState() {
