@@ -46,7 +46,6 @@ class _YouTubePlayerScreenState extends State<YouTubePlayerScreen> {
         final controller = android.WebViewController();
         await controller.setJavaScriptMode(android.JavaScriptMode.unrestricted);
         await controller.setBackgroundColor(const Color(0xFF000000));
-        await controller.setMediaPlaybackRequiresUserGesture(false);
         await controller.loadRequest(Uri.parse(_embedUrl));
         _androidController = controller;
       }
