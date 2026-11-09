@@ -19,6 +19,23 @@ jobs:
           channel: stable
       - name: Generate Android platform files
         run: flutter create . --platforms=android --project-name=youtube_x
+      - name: Add Android internet permission
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          manifest = Path("android/app/src/main/AndroidManifest.xml")
+          text = manifest.read_text()
+          permission = 'android.permission.INTERNET'
+          if permission not in text:
+              text = re.sub(
+                  r'(<manifest\\b[^>]*>)',
+                  r'\\1\\n    <uses-permission android:name="android.permission.INTERNET" />',
+                  text,
+                  count=1,
+              )
+              manifest.write_text(text)
+          PY
       - name: Install dependencies
         run: flutter pub get
       - name: Build release APK
