@@ -23,6 +23,7 @@ class _YouTubePlayerScreenState extends State<YouTubePlayerScreen> {
   android.WebViewController? _androidController;
   final windows.WebviewController _windowsController = windows.WebviewController();
   bool _ready = false;
+  bool _windowsInitialized = false;
   String? _error;
 
   String get _embedUrl =>
@@ -39,6 +40,7 @@ class _YouTubePlayerScreenState extends State<YouTubePlayerScreen> {
     try {
       if (!kIsWeb && Platform.isWindows) {
         await _windowsController.initialize();
+        _windowsInitialized = true;
         await _windowsController.loadUrl(_embedUrl);
       } else {
         final controller = android.WebViewController();
@@ -56,7 +58,7 @@ class _YouTubePlayerScreenState extends State<YouTubePlayerScreen> {
 
   @override
   void dispose() {
-    _windowsController.dispose();
+    if (_windowsInitialized) _windowsController.dispose();
     super.dispose();
   }
 
