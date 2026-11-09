@@ -20,6 +20,23 @@ jobs:
           cache: true
       - name: Generate Android platform files
         run: flutter create . --platforms=android --project-name=youtube_x
+      - name: Use direct Gradle distribution mirror
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          wrapper = Path("android/gradle/wrapper/gradle-wrapper.properties")
+          content = wrapper.read_text()
+          content = content.replace(
+              "https://services.gradle.org/distributions/",
+              "https://downloads.gradle.org/distributions/"
+          )
+          content = content.replace(
+              "https://github.com/gradle/gradle-distributions/releases/download/",
+              "https://downloads.gradle.org/distributions/"
+          )
+          wrapper.write_text(content)
+          print("Gradle distribution URL:", [line for line in content.splitlines() if line.startswith("distributionUrl=")][0])
+          PY
       - name: Add Android internet permission
         run: |
           python3 - <<'PY'
